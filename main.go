@@ -7,11 +7,13 @@ import (
 )
 
 func main() {
+
 	users := database.NewUsers()
-	bob := users.NewUser("bob")
 	Bob := users.NewUser("Bob")
-	bob.Follow(Bob)
+	bob := users.NewUser("bob")
+	// charlie := users.NewUser("charlie")
 	errFol := bob.Follow(Bob)
+	errFol = bob.Follow(Bob)
 	if errFol != nil {
 		fmt.Println(errFol)
 	}
@@ -20,8 +22,16 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+	Bob.Like(Bob)
 
+	errli := Bob.Like(Bob)
+	if errli != nil {
+		fmt.Println(errli)
+	}
+	td := users.Trending()
+	fmt.Println(td)
 	fmt.Println(Bob)
 	fmt.Println(bob)
 	fmt.Println(users)
+
 }
