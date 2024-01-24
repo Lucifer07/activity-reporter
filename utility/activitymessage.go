@@ -1,7 +1,8 @@
-package util
+package utility
 
 var (
 	LikeSelfPhoto = "You liked your photo"
+	Subject       = "You"
 )
 
 func LikePhotoMessage(subject string, object string) string {
