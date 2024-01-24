@@ -38,39 +38,45 @@ func (userSubject *User) UploadPhoto() (*photo, error) {
 		return nil, utility.ErrUploadePhoto
 	}
 	userSubject.photo = &photo{}
-	userSubject.activity = append(userSubject.activity, utility.UploadedPhotoMessage("You"))
+	userSubject.activity = append(userSubject.activity, utility.UploadedPhotoMessage(utility.Subject))
 	userSubject.NotifyObserverUploadPhoto()
 	return userSubject.photo, nil
 }
 func (userSubject *User) Like(user *User) error {
 	if user != userSubject {
-		isNotFollower := user.checkFollower(userSubject)
-		if isNotFollower != nil {
-			return isNotFollower
+		return userSubject.likeOthersPhoto(user)
+	}
+	return user.likeOwnPhoto()
+}
+func (userSubject *User) likeOwnPhoto() error {
+	if userSubject.photo != nil {
+		errLike := userSubject.checkLikes(userSubject)
+		if errLike != nil {
+			return errLike
 		}
-		if user.photo != nil {
-			errLike := user.checkLikes(userSubject)
-			if errLike != nil {
-				return errLike
-			}
-			userSubject.activity = append(userSubject.activity, utility.LikePhotoMessage(utility.Subject, user.name))
-			user.photo.likes = append(user.photo.likes, userSubject)
-			userSubject.NotifyObserverLike(user)
-			return nil
-		}
-		return utility.ErrDoesntHavePhoto(user.name)
+		userSubject.activity = append(userSubject.activity, utility.LikeSelfPhoto)
+		userSubject.photo.likes = append(userSubject.photo.likes, userSubject)
+		userSubject.NotifyObserverLike(userSubject)
+		return nil
+	}
+	return utility.ErrDontHavePhoto
+}
+func (userSubject *User) likeOthersPhoto(user *User) error {
+	isNotFollower := user.checkFollower(userSubject)
+	if isNotFollower != nil {
+		return isNotFollower
 	}
 	if user.photo != nil {
 		errLike := user.checkLikes(userSubject)
 		if errLike != nil {
 			return errLike
 		}
-		userSubject.activity = append(userSubject.activity, utility.LikeSelfPhoto)
+		userSubject.activity = append(userSubject.activity, utility.LikePhotoMessage(utility.Subject, user.name))
 		user.photo.likes = append(user.photo.likes, userSubject)
 		userSubject.NotifyObserverLike(user)
 		return nil
 	}
-	return utility.ErrDontHavePhoto
+	return utility.ErrDoesntHavePhoto(user.name)
 }
 func (userSubject *User) checkFollower(user *User) error {
 	for _, usr := range userSubject.followers {
