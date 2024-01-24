@@ -73,6 +73,16 @@ func TestLike(t *testing.T) {
 
 		assert.Equal(t, nil, err)
 	})
+	t.Run("should return already liked the photo if user try to like himself photo twice", func(t *testing.T) {
+		users := activityreporter.NewUsers()
+		bob := users.NewUser("bob")
+		target := utility.ErrAlreadyLike
+		bob.UploadPhoto()
+		bob.Like(bob)
+		err := bob.Like(bob)
+
+		assert.Equal(t, target, err)
+	})
 	t.Run("should return already liked the photo if user try to like some photo twice", func(t *testing.T) {
 		users := activityreporter.NewUsers()
 		bob := users.NewUser("bob")
@@ -118,4 +128,20 @@ func TestLike(t *testing.T) {
 
 		assert.Equal(t, target, err)
 	})
+
+}
+func TestCheckActivity(t *testing.T) {
+	users := activityreporter.NewUsers()
+	user := users.NewUser("bob")
+	target := []string{"You uploaded photo"}
+	user.UploadPhoto()
+	userActivity := user.Activity()
+	assert.Equal(t, target, userActivity)
+}
+func TestName(t *testing.T) {
+	users := activityreporter.NewUsers()
+	target := "bob"
+	user := users.NewUser("bob")
+	userName := user.Name()
+	assert.Equal(t, target, userName)
 }

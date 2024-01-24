@@ -4,15 +4,15 @@ import (
 	"git.garena.com/sea-labs-id/bootcamp/batch-03/maulana-jaelani/assignment-activity-reporter/-/tree/dev/utility"
 )
 
-type user struct {
+type User struct {
 	name       string
 	photo      *photo
-	followers  []*user
-	followings []*user
+	followers  []Observer
+	followings []*User
 	activity   []string
 }
 
-func (userSubject *user) Follow(user *user) error {
+func (userSubject *User) Follow(user *User) error {
 	if userSubject == user {
 		return utility.ErrFollowThemselves
 	}
@@ -21,11 +21,11 @@ func (userSubject *user) Follow(user *user) error {
 		return errFollowing
 	}
 	userSubject.followings = append(userSubject.followings, user)
-	user.updateFollower(userSubject)
+	user.UpdateFollower(userSubject)
 	return nil
 }
 
-func (userSubject *user) checkFollowing(user *user) error {
+func (userSubject *User) checkFollowing(user *User) error {
 	for _, usr := range userSubject.followings {
 		if usr == user {
 			return utility.ErrAlreadyFollowed
@@ -33,44 +33,46 @@ func (userSubject *user) checkFollowing(user *user) error {
 	}
 	return nil
 }
-func (userSubject *user) UploadPhoto() (*photo, error) {
+func (userSubject *User) UploadPhoto() (*photo, error) {
 	if userSubject.photo != nil {
 		return nil, utility.ErrUploadePhoto
 	}
 	userSubject.photo = &photo{}
 	userSubject.activity = append(userSubject.activity, utility.UploadedPhotoMessage("You"))
-	userSubject.notifyObserverUploadPhoto()
+	userSubject.NotifyObserverUploadPhoto()
 	return userSubject.photo, nil
 }
-func (userSubject *user) Like(user *user) error {
-	if user == userSubject && user.photo == nil {
-		return utility.ErrDontHavePhoto
-	}
-	if user != userSubject && user.photo == nil {
-		return utility.ErrDoesntHavePhoto(user.name)
-	}
-	if (user == userSubject && user.photo != nil) || (user != userSubject && user.photo != nil) {
-		errLike := user.checkLikes(userSubject)
-		if errLike != nil {
-			return errLike
-		}
-	}
-	if user != userSubject && user.photo != nil {
+func (userSubject *User) Like(user *User) error {
+	if user != userSubject {
 		isNotFollower := user.checkFollower(userSubject)
 		if isNotFollower != nil {
 			return isNotFollower
 		}
-		userSubject.activity = append(userSubject.activity, utility.LikePhotoMessage(utility.Subject, user.name))
+		if user.photo != nil {
+			errLike := user.checkLikes(userSubject)
+			if errLike != nil {
+				return errLike
+			}
+			userSubject.activity = append(userSubject.activity, utility.LikePhotoMessage(utility.Subject, user.name))
+			user.photo.likes = append(user.photo.likes, userSubject)
+			userSubject.NotifyObserverLike(user)
+			return nil
+		}
+		return utility.ErrDoesntHavePhoto(user.name)
 	}
-	if user == userSubject && user.photo != nil {
+	if user.photo != nil {
+		errLike := user.checkLikes(userSubject)
+		if errLike != nil {
+			return errLike
+		}
 		userSubject.activity = append(userSubject.activity, utility.LikeSelfPhoto)
+		user.photo.likes = append(user.photo.likes, userSubject)
+		userSubject.NotifyObserverLike(user)
+		return nil
 	}
-	user.photo.likes = append(user.photo.likes, userSubject)
-	userSubject.notifyObserverLike(user)
-	return nil
-
+	return utility.ErrDontHavePhoto
 }
-func (userSubject *user) checkFollower(user *user) error {
+func (userSubject *User) checkFollower(user *User) error {
 	for _, usr := range userSubject.followers {
 		if usr == user {
 			return nil
@@ -78,7 +80,7 @@ func (userSubject *user) checkFollower(user *user) error {
 	}
 	return utility.ErrUnableToLike(userSubject.name)
 }
-func (userSubject *user) checkLikes(user *user) error {
+func (userSubject *User) checkLikes(user *User) error {
 	for _, usr := range userSubject.photo.likes {
 		if usr == user {
 			return utility.ErrAlreadyLike
@@ -86,9 +88,9 @@ func (userSubject *user) checkLikes(user *user) error {
 	}
 	return nil
 }
-func (userSubject *user) Activity() []string {
+func (userSubject *User) Activity() []string {
 	return userSubject.activity
 }
-func (userSubject *user) Name() string {
+func (userSubject *User) Name() string {
 	return userSubject.name
 }

@@ -2,39 +2,39 @@ package activityreporter
 
 import "git.garena.com/sea-labs-id/bootcamp/batch-03/maulana-jaelani/assignment-activity-reporter/-/tree/dev/utility"
 
-type observer interface {
-	updateLikePhoto(userObject *user, ownerPhoto *user)
-	updateUploadPhoto(userObject *user)
+type Observer interface {
+	UpdateLikePhoto(userObject *User, ownerPhoto *User)
+	UpdateUploadPhoto(userObject *User)
 }
 
-func (userSubject *user) updateUploadPhoto(userObject *user) {
+func (userSubject *User) UpdateUploadPhoto(userObject *User) {
 	userSubject.activity = append(userSubject.activity, utility.UploadedPhotoMessage(userObject.name))
 }
-func (userSubject *user) updateLikePhoto(userObject *user, ownerPhoto *user) {
+func (userSubject *User) UpdateLikePhoto(userObject *User, ownerPhoto *User) {
 	userSubject.activity = append(userSubject.activity, utility.LikePhotoMessage(userObject.name, ownerPhoto.name))
 }
 
 type publisher interface {
-	updateFollower(observer)
-	notifyObserverLike(ownerPhoto *user)
-	notifyObserverUploadPhoto()
+	UpdateFollower(Observer)
+	NotifyObserverLike(ownerPhoto *User)
+	NotifyObserverUploadPhoto()
 }
 
-func (userSubject *user) notifyObserverUploadPhoto() {
+func (userSubject *User) NotifyObserverUploadPhoto() {
 	for _, follower := range userSubject.followers {
-		follower.updateUploadPhoto(userSubject)
+		follower.UpdateUploadPhoto(userSubject)
 	}
 }
-func (userSubject *user) notifyObserverLike(ownerPhoto *user) {
+func (userSubject *User) NotifyObserverLike(ownerPhoto *User) {
 	if userSubject != ownerPhoto {
 		ownerPhoto.activity = append(ownerPhoto.activity, utility.LikePhotoMessage(userSubject.name, "your"))
 	}
 	for _, follower := range userSubject.followers {
 		if follower != ownerPhoto {
-			follower.updateLikePhoto(userSubject, ownerPhoto)
+			follower.UpdateLikePhoto(userSubject, ownerPhoto)
 		}
 	}
 }
-func (userSubject *user) updateFollower(user *user) {
-	userSubject.followers = append(userSubject.followers, user)
+func (userSubject *User) UpdateFollower(o Observer) {
+	userSubject.followers = append(userSubject.followers, o)
 }

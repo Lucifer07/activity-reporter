@@ -16,7 +16,13 @@ func promptInput(scanner *bufio.Scanner, text string) []string {
 	scanner.Scan()
 	textInput := scanner.Text()
 	inputSplit := strings.Split(textInput, " ")
-	return inputSplit
+	var inpUser []string
+	for _, input := range inputSplit {
+		if input != "" {
+			inpUser = append(inpUser, input)
+		}
+	}
+	return inpUser
 }
 func main() {
 	start := true
@@ -46,12 +52,15 @@ func main() {
 			if secondErr != nil {
 				secondUser = users.NewUser(setupMenu[2])
 			}
-			firstUser.Follow(secondUser)
+			err := firstUser.Follow(secondUser)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
 		case "2":
 			actionMenu := promptInput(reader, "Enter user Actions: ")
 			if len(actionMenu) == 3 || len(actionMenu) == 4 {
 				if len(actionMenu) == 3 {
-					if actionMenu[1] != "uploaded" && actionMenu[2] != "photo" {
+					if (actionMenu[1] != "uploaded") || (actionMenu[2] != "photo") {
 						fmt.Println(utility.ErrKeyword.Error())
 						break
 					}
@@ -60,7 +69,11 @@ func main() {
 						fmt.Println(err.Error())
 						break
 					}
-					user.UploadPhoto()
+					_, err = user.UploadPhoto()
+					if err != nil {
+						fmt.Println(err.Error())
+						break
+					}
 					break
 				}
 				if actionMenu[1] != "likes" && actionMenu[3] != "photo" {
@@ -77,7 +90,10 @@ func main() {
 					fmt.Println(err.Error())
 					break
 				}
-				firstPerson.Like(secondPerson)
+				err = firstPerson.Like(secondPerson)
+				if err != nil {
+					fmt.Println(err.Error())
+				}
 				break
 			}
 			fmt.Println(utility.ErrKeyword.Error())
@@ -96,9 +112,9 @@ func main() {
 			fmt.Println("\nTrending photos:")
 			for index, photo := range users.Trending() {
 				sentence := ""
-				if photo.Like > 1 {
+				if photo.Like != 1 {
 					sentence = strconv.Itoa(index+1) + ". " + photo.Name + " photo got " + strconv.Itoa(photo.Like) + " likes"
-				} else if photo.Like <= 1 && photo.Like >= 0 {
+				} else {
 					sentence = strconv.Itoa(index+1) + ". " + photo.Name + " photo got " + strconv.Itoa(photo.Like) + " like "
 				}
 				fmt.Println(sentence)

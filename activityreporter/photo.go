@@ -1,5 +1,5 @@
 package activityreporter
 
 type photo struct {
-	likes []*user
+	likes []*User
 }
