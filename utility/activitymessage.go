@@ -6,8 +6,10 @@ var (
 )
 
 func LikePhotoMessage(subject string, object string) string {
-	return subject + " liked " + object + "'s photo"
-
+	if object != "your" {
+		return subject + " liked " + object + "'s photo"
+	}
+	return subject + " liked " + object + " photo"
 }
 func UploadedPhotoMessage(subject string) string {
 	return subject + " uploaded photo"

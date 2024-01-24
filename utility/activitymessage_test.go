@@ -16,6 +16,15 @@ func TestLikePhotoMessage(t *testing.T) {
 		assert.Equal(t, target, message)
 	})
 }
+func TestLikeOwnPhotoMessage(t *testing.T) {
+	t.Run("should have return subject liked object photo", func(t *testing.T) {
+		subject := "Bob"
+		object := "your"
+		target := subject + " liked " + "your" + " photo"
+		message := utility.LikePhotoMessage(subject, object)
+		assert.Equal(t, target, message)
+	})
+}
 func TestUploadedPhotoMessage(t *testing.T) {
 	t.Run("should have return subject uploaded photo", func(t *testing.T) {
 		subject := "Bob"

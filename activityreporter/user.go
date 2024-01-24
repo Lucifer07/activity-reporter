@@ -46,7 +46,7 @@ func (userSubject *User) Like(user *User) error {
 	if user != userSubject {
 		return userSubject.likeOthersPhoto(user)
 	}
-	return user.likeOwnPhoto()
+	return userSubject.likeOwnPhoto()
 }
 func (userSubject *User) likeOwnPhoto() error {
 	if userSubject.photo != nil {
