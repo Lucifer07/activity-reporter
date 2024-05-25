@@ -1,2 +1,0 @@
-# assignment-activity-reporter
-

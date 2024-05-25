@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	activityreporter "git.garena.com/sea-labs-id/bootcamp/batch-03/maulana-jaelani/assignment-activity-reporter/-/tree/dev/activityreporter"
+	activityreporter "github.com/Lucifer07/activity-reporter/activityreporter"
 	mock "github.com/stretchr/testify/mock"
 )
 

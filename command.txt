@@ -1,0 +1,37 @@
+1
+Alice follows Bob
+1
+Alice follows Bill
+1
+John follows Bob
+1
+Bob follows Alice
+1
+Bob follows Bill
+1
+John follows Alice
+2
+Alice uploaded photo
+2
+Bob likes Alice photo
+2
+Bill uploaded photo
+2
+Bob likes Bill photo
+2
+Bill likes Bill photo
+2
+Alice likes Bill photo
+2
+Bill likes Alice photo
+3
+Bob
+3
+John
+3
+Alice
+3
+Bill
+4
+5
+6

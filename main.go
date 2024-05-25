@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"git.garena.com/sea-labs-id/bootcamp/batch-03/maulana-jaelani/assignment-activity-reporter/-/tree/dev/activityreporter"
+	"github.com/Lucifer07/activity-reporter/activityreporter"
 )
 
 func promptInput(scanner *bufio.Scanner, text string) []string {
@@ -15,9 +15,11 @@ func promptInput(scanner *bufio.Scanner, text string) []string {
 	textInput := scanner.Text()
 	inputSplit := strings.Split(textInput, " ")
 	var inpUser []string
-	for _, input := range inputSplit {
-		if input != "" {
-			inpUser = append(inpUser, input)
+	if len(inputSplit) != 0 {
+		for _, input := range inputSplit {
+			if input != "" {
+				inpUser = append(inpUser, input)
+			}
 		}
 	}
 	return inpUser

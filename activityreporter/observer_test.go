@@ -3,8 +3,8 @@ package activityreporter_test
 import (
 	"testing"
 
-	"git.garena.com/sea-labs-id/bootcamp/batch-03/maulana-jaelani/assignment-activity-reporter/-/tree/dev/activityreporter"
-	"git.garena.com/sea-labs-id/bootcamp/batch-03/maulana-jaelani/assignment-activity-reporter/-/tree/dev/activityreporter/mocks"
+	"github.com/Lucifer07/activity-reporter/activityreporter"
+	"github.com/Lucifer07/activity-reporter/activityreporter/mocks"
 )
 
 func TestUpdateLikePhoto(t *testing.T) {

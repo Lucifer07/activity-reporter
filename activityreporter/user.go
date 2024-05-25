@@ -1,7 +1,7 @@
 package activityreporter
 
 import (
-	"git.garena.com/sea-labs-id/bootcamp/batch-03/maulana-jaelani/assignment-activity-reporter/-/tree/dev/utility"
+	"github.com/Lucifer07/activity-reporter/utility"
 )
 
 type User struct {
